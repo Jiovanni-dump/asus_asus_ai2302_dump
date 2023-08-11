@@ -1,0 +1,9 @@
+ro.product.product.brand=FAKE
+ro.product.product.device=FAKE
+ro.product.product.manufacturer=FAKE
+ro.product.product.model=FAKE
+ro.product.product.name=WWFAKE
+ro.product.build.fingerprint=FAKE/WWFAKE/FAKE:13/TKQ1.220928.001/33.0220.0220.43:user/release-keys
+ro.com.google.clientidbase=android-asus
+ro.com.google.clientidbase.ms=android-asus
+ro.com.google.lens.oem_camera_package=com.asus.camera
