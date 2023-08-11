@@ -1,0 +1,478 @@
+//
+// Copyright (C) 2023 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Init scripts
+sh_binary {
+    name: "SelfTestOpenHalf.sh",
+    src: "bin/SelfTestOpenHalf.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.sdio.sh",
+    src: "bin/init.qcom.sdio.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "firmware_version.sh",
+    src: "bin/firmware_version.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.kernel.sh",
+    src: "bin/init.qti.kernel.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "WifiSARPower.sh",
+    src: "bin/WifiSARPower.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.kernel.early_debug-kalama.sh",
+    src: "bin/init.qti.kernel.early_debug-kalama.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "SelfTestClose.sh",
+    src: "bin/SelfTestClose.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.usb.sh",
+    src: "bin/init.qcom.usb.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.display_boot.sh",
+    src: "bin/init.qti.display_boot.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "widevine.sh",
+    src: "bin/widevine.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "shutdown_debug.sh",
+    src: "bin/shutdown_debug.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "erase_batinfo.sh",
+    src: "bin/erase_batinfo.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "SelfTestOpen.sh",
+    src: "bin/SelfTestOpen.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.asus.check_last.sh",
+    src: "bin/init.asus.check_last.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.asus.changebinder.sh",
+    src: "bin/init.asus.changebinder.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.asus.check_asdf.sh",
+    src: "bin/init.asus.check_asdf.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "magnetometer_accessory_installed.sh",
+    src: "bin/magnetometer_accessory_installed.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.class_core.sh",
+    src: "bin/init.qcom.class_core.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.coex.sh",
+    src: "bin/init.qcom.coex.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "cat_pcbid.sh",
+    src: "bin/cat_pcbid.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "create_pcbid.sh",
+    src: "bin/create_pcbid.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "magnetometer_accessory2_installed.sh",
+    src: "bin/magnetometer_accessory2_installed.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "magnetometer_accessory_removed.sh",
+    src: "bin/magnetometer_accessory_removed.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "cscclearlog.sh",
+    src: "bin/cscclearlog.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "savelogmtp.sh",
+    src: "bin/savelogmtp.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "LightFingerprintPosition.sh",
+    src: "bin/LightFingerprintPosition.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.kernel.post_boot.sh",
+    src: "bin/init.kernel.post_boot.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "ufs_info.sh",
+    src: "bin/ufs_info.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.media.sh",
+    src: "bin/init.qti.media.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "asus_ufs_check.sh",
+    src: "bin/asus_ufs_check.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "vendor_modprobe.sh",
+    src: "bin/vendor_modprobe.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "qca6234-service.sh",
+    src: "bin/qca6234-service.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "LcdPanel_VendorID.sh",
+    src: "bin/LcdPanel_VendorID.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "vendor_savelogs.sh",
+    src: "bin/vendor_savelogs.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "system_dlkm_modprobe.sh",
+    src: "bin/system_dlkm_modprobe.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "WifiMac.sh",
+    src: "bin/WifiMac.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "grip_vib_request.sh",
+    src: "bin/grip_vib_request.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "grip_cal.sh",
+    src: "bin/grip_cal.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.asus.zram.sh",
+    src: "bin/init.asus.zram.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "grip_fpc_check.sh",
+    src: "bin/grip_fpc_check.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "compare_wlc_fw_version.sh",
+    src: "bin/compare_wlc_fw_version.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "gf_ver.sh",
+    src: "bin/gf_ver.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "asus_ufs_init.sh",
+    src: "bin/asus_ufs_init.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "grip_read_fw_status.sh",
+    src: "bin/grip_read_fw_status.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "sensors_factory_init.sh",
+    src: "bin/sensors_factory_init.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.write.sh",
+    src: "bin/init.qti.write.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "ufs_fw.sh",
+    src: "bin/ufs_fw.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "grip_chip_status_check.sh",
+    src: "bin/grip_chip_status_check.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.sh",
+    src: "bin/init.qcom.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "NfcFelica.sh",
+    src: "bin/NfcFelica.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "touch_ver.sh",
+    src: "bin/touch_ver.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.post_boot.sh",
+    src: "bin/init.qcom.post_boot.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.kernel.debug-kalama.sh",
+    src: "bin/init.qti.kernel.debug-kalama.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.kernel.post_boot-kalama.sh",
+    src: "bin/init.kernel.post_boot-kalama.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "tdoor_load_cal.sh",
+    src: "bin/tdoor_load_cal.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "ssr_cfg.sh",
+    src: "bin/ssr_cfg.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.mdm.sh",
+    src: "bin/init.mdm.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.sensors.sh",
+    src: "bin/init.qcom.sensors.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.crda.sh",
+    src: "bin/init.crda.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "asus_ufs_shutdown.sh",
+    src: "bin/asus_ufs_shutdown.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.early_boot.sh",
+    src: "bin/init.qcom.early_boot.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "PanelFrameRate.sh",
+    src: "bin/PanelFrameRate.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "BLPower.sh",
+    src: "bin/BLPower.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.class_main.sh",
+    src: "bin/init.class_main.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.kernel.early_debug.sh",
+    src: "bin/init.qti.kernel.early_debug.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.efs.sync.sh",
+    src: "bin/init.qcom.efs.sync.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.qcv.sh",
+    src: "bin/init.qti.qcv.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qti.kernel.debug.sh",
+    src: "bin/init.qti.kernel.debug.sh",
+    vendor: true,
+}
+
+// Init configuration files
+prebuilt_etc {
+    name: "init.qti.ufs.rc",
+    src: "etc/init.qti.ufs.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.rc",
+    src: "etc/init.qcom.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.asus.rc",
+    src: "etc/init.asus.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qti.kernel.rc",
+    src: "etc/init.qti.kernel.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.factory.rc",
+    src: "etc/init.qcom.factory.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.usb.rc",
+    src: "etc/init.qcom.usb.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.asus.debugtool.rc",
+    src: "etc/init.asus.debugtool.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.target.rc",
+    src: "etc/init.target.rc",
+    sub_dir: "init/hw",
+    vendor: true,
+}
+
+// fstab
+prebuilt_etc {
+    name: "fstab.qcom",
+    src: "etc/fstab.qcom",
+    vendor: true,
+}

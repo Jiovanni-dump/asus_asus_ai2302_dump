@@ -1,0 +1,2 @@
+bootRE/boot.elf.xz
+recovery.img.xz

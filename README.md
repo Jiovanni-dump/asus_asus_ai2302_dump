@@ -1,0 +1,14 @@
+# qssi-user 13 TKQ1.220928.001 33.0220.0220.43 release-keys
+- manufacturer: asus
+- platform: kalama
+- codename: ASUS_AI2302
+- flavor: qssi-user
+- release: 13
+- id: TKQ1.220928.001
+- incremental: 33.0220.0220.43
+- tags: release-keys
+- fingerprint: asus/WW_AI2302/ASUS_AI2302:13/TKQ1.220928.001/33.0220.0220.43:user/release-keys
+- is_ab: true
+- brand: asus
+- branch: qssi-user-13-TKQ1.220928.001-33.0220.0220.43-release-keys
+- repo: asus_asus_ai2302_dump
