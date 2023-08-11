@@ -1,0 +1,55 @@
+#!/vendor/bin/sh
+
+help() {
+    echo "
+API:    ATD TestCommand Interface
+FORMAT: adb shell /data/data/AngleCalibration param1 param2
+PARAM:
+    1. cal speed
+    2. cal steps
+RETURN: Calibration status(PASS/FAIL)
+
+"
+exit 0
+}
+
+if [ $# -ne 2 ]
+then
+    help
+    exit 0
+fi
+
+CMD=97
+SPEED=$1
+STEPS=$2
+
+CTRL_NODE="/proc/asus_motor/motor_angle"
+
+echo "${CMD} ${SPEED} ${STEPS}" > ${CTRL_NODE}
+
+if [ $? -eq 0 ]
+then
+    #Wait for calibration done
+    sleep 25
+    ANGLE=`/data/data/AngleGet`
+    if [ "${ANGLE}" == "FAIL" ]
+    then
+        #If after calibration, angle still get FAIL then return FAIL
+        echo "FAIL"
+        exit 0
+    fi
+    #echo "REAL:${ANGLE}"
+    ANGLE_x100=`echo "scale=2; ${ANGLE}*100" | bc`
+    #echo "${ANGLE_x100}"
+    #replace '.' to space ' ' and original string will split by space ' ' defaultly
+    ANGLE_SPLIT=(${ANGLE_x100//./  })
+    #echo "${ANGLE_SPLIT[0]}"
+    if [ ${ANGLE_SPLIT[0]} -lt 18500 ] && [ ${ANGLE_SPLIT[0]} -gt 17500 ]
+    then
+        echo "PASS"
+    else
+        echo "FAIL"
+    fi
+else
+    echo "FAIL"
+fi

@@ -1,0 +1,89 @@
+#!/system/bin/sh
+
+help() {
+    echo "
+API:    ATD TestCommand Interface
+FORMAT: adb shell /data/data/AngleGet
+PARAM: None
+RETURN: Real angle value(eg:66.66)
+
+"
+exit 0
+}
+
+#**
+# substr
+# $1:target string
+# $2:sub string that to be found in target string
+#
+function substr()
+{
+    STRING_A=$1
+    STRING_B=$2
+
+    if [[ "${STRING_A}" = *"${STRING_B}"* ]]
+    then
+        ## is substring.
+        return 1
+    else
+        ## is not substring.
+        return 0
+    fi
+}
+
+#No param need
+if [ $# -ne 0 ]
+then
+    help
+    exit 0
+fi
+
+RAW_STR=`cat /proc/asus_motor/motor_angle`
+
+#@Test++++
+#eg: right value "[MCU] Angle raw data:00 00 06 FF"
+#RAW_STR="[MCU] Angle raw data:00 00 06 FF"
+
+#eg: wrong value "[MCU] Get angle fail!"
+#RAW_STR="[MCU] Get angle fail!"
+#@Test++
+
+#Check value is valid or not
+substr "${RAW_STR}" "[MCU] Angle raw data:"
+if [ $? -eq 0 ]
+then
+    echo "FAIL"
+    exit 0
+fi
+
+#echo "[ABSP] ${RAW_STR}"
+#replace ':' to space ' ' and original string will split by space ' ' defaultly
+RAW_DATA=(${RAW_STR//:/  })
+
+#echo "[ABSP]  $(($((16#${RAW_DATA[5]}))<<16)) $(($((16#${RAW_DATA[6]}))<<8)) $((16#${RAW_DATA[7]}))"
+
+VALUE4=$(($((16#${RAW_DATA[4]}))<<24))
+VALUE3=$(($((16#${RAW_DATA[5]}))<<16))
+VALUE2=$(($((16#${RAW_DATA[6]}))<<8))
+VALUE1=$((16#${RAW_DATA[7]}))
+ANGLE_VAL=$((${VALUE4}+${VALUE3}+${VALUE2}+${VALUE1}))
+
+#Float-point arithmetic
+NEG=""
+if [ ${ANGLE_VAL} -lt 0 ]
+then
+    ANGLE_VAL=$((0-ANGLE_VAL))
+    NEG="-"
+fi
+
+#Add '0' at head when val read from motor angle less than 100 but not equal 0
+LESS_HUND=""
+if [ ${ANGLE_VAL} -lt 100 ] && [ ${ANGLE_VAL} -ne 0 ]
+then
+    LESS_HUND="0"
+fi
+
+ANGLE_REAL=`echo "scale=2; ${ANGLE_VAL}/100.0" | bc`
+
+echo "${NEG}${LESS_HUND}${ANGLE_REAL}"
+

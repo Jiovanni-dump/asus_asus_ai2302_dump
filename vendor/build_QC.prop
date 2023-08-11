@@ -1,0 +1,6 @@
+ro.product.vendor.brand=FAKE
+ro.product.vendor.device=FAKE
+ro.product.vendor.manufacturer=FAKE
+ro.product.vendor.model=FAKE
+ro.product.vendor.name=WWFAKE
+ro.vendor.build.fingerprint=FAKE/WWFAKE/FAKE:13/TKQ1.220928.001/33.0220.0220.43:user/release-keys

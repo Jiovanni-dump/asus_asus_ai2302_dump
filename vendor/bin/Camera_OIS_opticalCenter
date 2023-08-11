@@ -1,0 +1,35 @@
+#!/system/bin/sh
+#[0x021A], [0x021C] two address
+#adb shell "cat /proc/driver/eeprom0 | grep -ie 0x1C33 | cut -d \" \" -f 2"
+#eg: echo 0x021A 2 0x0123 > /proc/driver/ois_i2c_rw
+#high and low byte don't < 1000
+# 1000(10) = 0x3E8
+
+debug=0
+value=0
+ois_1c33=`cat /proc/driver/eeprom0 | grep -ie 0x1C4f | cut -d /" /" -f 2`
+ois_1c34=`cat /proc/driver/eeprom0 | grep -ie 0x1C50 | cut -d /" /" -f 2`
+ois_1c35=`cat /proc/driver/eeprom0 | grep -ie 0x1C51 | cut -d /" /" -f 2`
+ois_1c36=`cat /proc/driver/eeprom0 | grep -ie 0x1C52 | cut -d /" /" -f 2`
+
+ois_21A_data="0x${ois_1c34##*x}${ois_1c33##*x}"
+ois_21C_data="0x${ois_1c36##*x}${ois_1c35##*x}"
+
+#echo "0x21A=${ois_21A_data}"
+#echo "0x21C=${ois_21C_data}"
+
+if [[ $(($ois_21A_data)) -lt 1000 ]] || [[ $(($ois_21C_data)) -lt 1000 ]]
+then
+    [ $debug -eq 1 ] && echo "read ois 0x1c33-0x1c34 or read ois 0x1c35-0x1c36 < 1000"
+else
+    [ $debug -eq 1 ] && echo "read ois 0x1c33~0x1c36 > 1000"
+
+    echo 0x021A 2 "$ois_21A_data" > /proc/driver/ois_i2c_rw
+    echo 0x021C 2 "$ois_21C_data" > /proc/driver/ois_i2c_rw
+    value=1
+fi
+
+echo "$value"
+
+return $value
+

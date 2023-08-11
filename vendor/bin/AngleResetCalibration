@@ -1,0 +1,31 @@
+#!/vendor/bin/sh
+
+help() {
+    echo "
+API:    ATD TestCommand Interface
+FORMAT: adb shell /data/data/AngleResetCalibration
+PARAM: None
+RETURN: Reset calibration status(PASS/FAIL)
+
+"
+exit 0
+}
+
+if [ $# -ne 0 ]
+then
+    help
+    exit 0
+fi
+
+CMD=104
+CTRL_NODE="/proc/asus_motor/motor_akm"
+
+echo ${CMD} > ${CTRL_NODE}
+
+if [ $? -eq 0 ]
+then
+    echo "PASS"
+else
+    echo "FAIL"
+fi
+

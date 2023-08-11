@@ -1,0 +1,10 @@
+#!/system/bin/sh
+
+status=`getprop ro.boot.id.prj`
+
+if [ "$status" -eq "4" ]; then 
+    echo AI2302
+
+else 
+	echo Unknown
+fi

@@ -1,0 +1,761 @@
+#################################################################
+#
+#   	              ASUS USER RC
+#
+#################################################################
+# ASUS Debug
+import /vendor/etc/init/hw/init.asus.debugtool.rc
+
+#################################
+#
+#   	booting on trigger
+#
+# ****DO NOT insert any services***     
+#
+#################################
+on boot
+
+###################################################################################333
+# adding big/little cpu affinity
+
+    mkdir /dev/stune/big-aff
+    chown system system /dev/stune/big-aff
+    chmod 0664 /dev/stune/big-aff/tasks
+
+    mkdir /dev/stune/little-aff
+    chown system system /dev/stune/little-aff
+    chmod 0664 /dev/stune/little-aff/tasks
+
+    mkdir /dev/cpuset/big-aff
+    write /dev/cpuset/big-aff/cpus 3-7
+    write /dev/cpuset/big-aff/mems 0
+    chown system system /dev/cpuset/big-aff
+    chown system system /dev/cpuset/big-aff/tasks
+    chmod 0660 /dev/cpuset/big-aff/tasks
+
+    mkdir /dev/cpuset/little-aff
+    write /dev/cpuset/little-aff/cpus 0-2
+    write /dev/cpuset/little-aff/mems 0
+    chown system system /dev/cpuset/little-aff
+    chown system system /dev/cpuset/little-aff/tasks
+    chmod 0660 /dev/cpuset/little-aff/tasks
+
+    restorecon_recursive /dev/cpuset/big-aff/
+    restorecon_recursive /dev/cpuset/little-aff/
+###################################################################################33
+
+    # BT A2DP offload mode property
+    setprop persist.bluetooth.a2dp_offload.disabled false
+
+    write /sys/module/msm_show_resume_irq/parameters/debug_mask 1
+
+on charger
+#set cos flag
+    setprop ro.charger.enable_suspend true
+    wait /sys/class/asuslib/set_charger_mode
+    write /sys/class/asuslib/set_charger_mode 1
+    write /sys/devices/platform/soc/soc:goodix_gf3626@0/gf_charger_mode 1
+
+#disable sepolicy 
+    write  /sys/fs/selinux/log 1
+
+#disable pmoled
+    write /sys/class/spi_master/spi0/spi0.0/Power 0
+
+#+++ ASUS_BSP : add for mount asdf in COS mode
+    wait /dev/block/bootdevice/by-name/asdf
+    mount ext4 /dev/block/bootdevice/by-name/asdf /asdf nosuid nodev noatime barrier=1
+    chmod 0775 /asdf
+    restorecon_recursive /asdf
+
+    write /proc/asusevtlog  "ASDF: Check LastShutdown log."
+    write /proc/asusdebug  get_asdf_log
+    write /proc/asusevtlog "charger: enter charger mode"
+    write /asdf/CHGLimit 0
+    write /sys/fs/selinux/log 1
+
+    start logd
+    start logcat-charger
+    start bat_bs
+#--- ASUS_BSP : add for mount asdf in COS mode
+
+#+++ASUS_BSP : add for charger mode to access LEDs
+    chmod 0777 /sys/class/leds/red/brightness
+    chmod 0777 /sys/class/leds/green/brightness
+    chmod 0777 /sys/class/leds/red/delay_on
+    chmod 0777 /sys/class/leds/green/delay_on
+    chmod 0777 /sys/class/leds/red/delay_off
+    chmod 0777 /sys/class/leds/green/delay_off
+#---ASUS_BSP : add for charger mode to access LEDs
+    chmod 0444 /proc/cmdline
+    start system_suspend
+
+on init
+#+++ ASUS_BSP : GPS
+    setprop vendor.qti.qdma.oper.mode 3
+#--- ASUS_BSP : GPS
+
+on fs
+
+
+on post-fs
+    chmod 0755 /mnt/vendor/persist/adbkey.pub
+    chown root root /mnt/vendor/persist/adbkey.pub
+
+# ASUS_BSP Widevine +++
+    copy /vendor/etc/wvlic.pfm /mnt/vendor/persist/data/pfm/licenses/Asus_Widevine.pfm
+    chmod 644 /mnt/vendor/persist/data/pfm/licenses/Asus_Widevine.pfm
+# ASUS_BSP Widevine ---
+
+on post-fs-data
+# +++ ASUS_BSP : add for asus boot animation partition
+# mount ADF
+    wait /dev/block/bootdevice/by-name/ADF
+    exec /system/bin/e2fsck -p /dev/block/bootdevice/by-name/ADF
+    mount ext4 /dev/block/bootdevice/by-name/ADF /ADF nosuid nodev noatime barrier=1
+    chmod 0775 /ADF
+    chmod 0775 /ADF/boot
+    chown system system /ADF
+    restorecon_recursive /ADF
+
+#mount APD
+    wait /dev/block/bootdevice/by-name/APD
+    exec /system/bin/e2fsck -p /dev/block/bootdevice/by-name/APD
+    mount ext4 /dev/block/bootdevice/by-name/APD /APD nosuid nodev noatime barrier=1
+    chmod 0775 /APD
+    chown system system /APD
+    restorecon_recursive /APD
+
+# --- ASUS_BSP : add for asus boot animation partition
+
+# +++ ASUS_BSP : add for asus battery safety upgrade and health partition
+#mount batinfo
+    wait /dev/block/bootdevice/by-name/batinfo
+    exec /system/bin/e2fsck -p /dev/block/bootdevice/by-name/batinfo
+    mount ext4 /dev/block/bootdevice/by-name/batinfo /batinfo nosuid nodev noatime barrier=1
+    chown shell root /batinfo
+    chmod 0775 /batinfo
+    chmod 0777 /batinfo/.bs
+    chmod 0777 /batinfo/bat_safety
+    chmod 0777 /batinfo/Batpercentage
+    restorecon_recursive /batinfo
+
+# --- ASUS_BSP : add for asus battery safety upgrade and health partition
+
+#ASUS_BSP+++ "modify about wifi node for antenna"
+    chmod 0666 /sys/devices/platform/soc/b0000000.qcom,cnss-qca-converged/do_wifi_antenna_switch
+#ASUS_BSP--- "modify about wifi node for antenna"
+
+# ASUS_BSP : add for trigger ftm mode
+    setprop ro.boot.ftm  ${ro.boot.pre-ftm}
+
+# +++ ASUS_BSP : adb enable property
+    setprop factory.adbon ${ro.boot.adb.enable}
+    setprop factory.adbon2 ${ro.boot.adb.enable}
+# --- ASUS_BSP : adb enable property
+
+# +++ ASUS_BSP : add persist.asus.serialno for CSCMMI
+#    setprop persist.asus.serialno ${ro.boot.serialno}
+# --- ASUS_BSP : add persist.asus.serialno for CSCMMI
+
+# +++ ASUS_BSP : Pmoled Secdisplay
+#    chmod 0666 /sys/devices/platform/soc/888000.spi/spi_master/spi0/spi0.0/Backlight
+#    chmod 0666 /sys/devices/platform/soc/888000.spi/spi_master/spi0/spi0.0/Pattern
+#    chmod 0666 /sys/devices/platform/soc/888000.spi/spi_master/spi0/spi0.0/Power
+# --- ASUS_BSP : Pmoled Secdisplay
+
+# MCU +++
+#    chmod 0777 /proc/asus_motor/motor_wq_run
+#    #chown audio audio /proc/asus_motor/motor_wq_run
+#    write /proc/asus_motor/motor_wq_run 1
+#    chmod 0777 /dev/asusMotoDrv
+# MCU ---
+
+
+# ANAS++ turn on / off modem RF power when airplane mode change
+    chown radio radio /sys/devices/platform/soc/4080000.remoteproc-mss/rf_power
+
+# ASUS BSP Camera +++
+    chmod 777 /data/vendor/camera
+# ASUS BSP Camera ---
+
+# ASUS_BSP Display +++
+    chmod 0666 /sys/class/asus_fod/hdr_mode
+    chmod 0666 /sys/class/asus_fod_touch/fod_touched
+    chmod 0444 /sys/class/asus_fod/ghbm_on_requested
+    chmod 0444 /sys/class/asus_fod/ghbm_on_achieved
+    chmod 0444 /sys/class/asus_fod/spot_on_achieved
+    chmod 0666 /sys/class/asus_fod/hbm_mode
+# ASUS_BSP Display ---
+
+#asus jack for Solarcore +++
+#	chown system system /sys/class/game_mode/audio/enable
+#	chown system system /sys/class/game_mode/audio/bt_stereo
+#	chown system system /sys/class/game_mode/audio/rnn_ans
+#	chown system system /sys/class/game_mode/graphic/low_latency
+#	restorecon -R /sys/class/game_mode
+#asus jack for Solarcore ---
+
+# +++ ASUS_BSP : NFC
+    mkdir /data/vendor 0777 nfc nfc
+    mkdir /data/vendor/nfc 0777 nfc nfc
+    mkdir /data/vendor/nfc/param 0777 nfc nfc
+    chmod 0660 /dev/nxp-nci
+    chown nfc nfc /dev/nxp-nci
+# --- ASUS_BSP : NFC
+
+# ASUS_BSP add for ATD check hallsensor status +++
+    symlink /vendor/bin/hallsensor_status /data/data/hallsensor_status
+    chmod 0777 /data/data/hallsensor_status
+    symlink /vendor/bin/hallsensor1_status /data/data/hallsensor1_status
+    chmod 0777 /data/data/hallsensor1_status
+    symlink /vendor/bin/hallsensor2_status /data/data/hallsensor2_status
+    chmod 0777 /data/data/hallsensor2_status
+    symlink /vendor/bin/hallsensor3_status /data/data/hallsensor3_status
+    chmod 0777 /data/data/hallsensor3_status
+# ASUS_BSP add for ATD check hallsensor status ---
+
+# ASUS_BSP +++ AsusRecord
+    start asus_record
+# ASUS_BSP --- ASUSRecord
+
+# ASUS_BSP +++ Perf/Thermal CDN
+	mkdir /data/vendor/BBY 0777 system system
+# ASUS_BSP --- Perf/Thermal CDN
+
+#####################################################
+#####################################################
+#####################################################
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#        FTM Mode property trigger (start)
+#          ( trigger on ro.boot.ftm=1 )
+#
+#       ****DO NOT insert any services***     
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+
+on property:ro.boot.ftm=1 && property:sys.boot_completed=1
+    setprop ro.setupwizard.mode DISABLED
+
+###-----------------------------------------------###
+#         FTM Mode property trigger (end)
+#          ( trigger on ro.boot.ftm=1 )
+#
+#       ****DO NOT insert any services***     
+###-----------------------------------------------###
+
+#####################################################
+#####################################################
+#####################################################
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#         ROG dongle property trigger (end)
+#          ( trigger on sys.asus.dongletype=* )
+# service
+#           ****DO NOT insert service***     
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#        ROG dongle property trigger (start)
+#          ( trigger on sys.asus.dongletype=* )
+#
+#       ****DO NOT insert any services***
+#
+#       0 : No Dongle
+#       1 : InBox
+#       2 : Station
+#       3 : DT
+#       4 : Error type
+#
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+
+###-----------------------------------------------###
+#         ROG dongle property trigger (end)
+#          ( trigger on sys.asus.dongletype=* )
+# 
+#            ****DO NOT insert service***     
+###-----------------------------------------------###    
+
+#####################################################
+#####################################################
+#####################################################
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#               ALL ASUS service (start)
+#
+#         ****DO NOT insert any on property***
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+
+# ASUS_BSP Wilson for Ecompass accessory offset  +++
+service ecompass_accessoryALL_removed /vendor/bin/magnetometer_accessory_removed.sh
+        seclabel u:r:ASensorsService:s0
+        class core
+        user root
+        oneshot
+        disabled
+
+service ecompass_accessoryA_installed /vendor/bin/magnetometer_accessory_installed.sh
+        seclabel u:r:ASensorsService:s0
+        class core
+        user root
+        oneshot
+        disabled
+# ASUS_BSP Wilson for Ecompass accessory offset  ---
+
+# ASUS_BSP Clay_Wang +++ sensor calibration file create service
+service GripCalService /vendor/bin/grip_cal.sh
+        class core
+        user root
+        oneshot
+        disabled
+
+service GripCheckK /vendor/bin/grip_fpc_check.sh
+        class core
+	seclabel u:r:vendor_thermal-engine:s0
+        user root
+        oneshot
+	disabled
+# ASUS_BSP Clay_Wang ---
+
+#ASUS BSP touch +++
+service touch_ver /vendor/bin/sh  /vendor/bin/touch_ver.sh
+    class core
+    user root
+    group root
+    oneshot
+    disabled
+
+#ASUS BSP touch ---
+
+service wifimacsh /vendor/bin/sh /vendor/bin/WifiMac.sh
+    class core
+    user root
+    group root
+    oneshot
+    disabled
+
+service WifiSAR /vendor/bin/sh /vendor/bin/WifiSARPower.sh
+    class core
+    user root
+    group root
+    oneshot
+    disabled
+
+# ASUS_BSP NFC +++
+service nfcfelica /vendor/bin/sh /vendor/bin/NfcFelica.sh ${vendor.asus.nfc.felica}
+    class core
+    user root
+    group root
+    oneshot
+    disabled
+# ASUS_BSP NFC ---
+
+service asus_zram /system/vendor/bin/sh /vendor/bin/init.asus.zram.sh
+    user root
+    group root
+    disabled
+    seclabel u:r:savelogmtp:s0
+    oneshot
+
+# jack for fps monitor
+service servicecall  /system/bin/sh  /system/bin/surfaceflinger_call.sh
+    class late_start
+    user root
+    disabled
+    oneshot
+    seclabel u:r:dumpstate:s0
+###-----------------------------------------------###
+#                ALL ASUS service (end)
+#
+#         ***DO NOT insert any on property***   
+###-----------------------------------------------###
+
+
+#####################################################
+#####################################################
+#####################################################
+
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+#               ALL ASUS on property  (start)
+# 
+#           ****DO NOT insert service***     
+###+++++++++++++++++++++++++++++++++++++++++++++++###
+
+on property:persist.vendor.zram.enable=*
+    start asus_zram
+
+on property:vendor.init.zram.enable=*
+    setprop persist.vendor.zram.enable ${vendor.init.zram.enable}
+
+# ASUS_BSP Wilson for Ecompass accessory offset  +++
+on property:vendor.asus.hall.accessory=0
+    start ecompass_accessoryALL_removed
+
+on property:vendor.asus.hall.accessory=1
+    start ecompass_accessoryA_installed
+
+on property:vendor.asus.mag.accessory=0	
+    start ecompass_accessoryALL_removed
+
+on property:vendor.asus.mag.accessory=1
+    start ecompass_accessoryA_installed
+	
+# ASUS_BSP Wilson for Ecompass accessory offset ---
+
+# ASUS_BSP+++ Clay_Wang "For Grip Calibration"
+on property:debug.grip.calibration=*
+	start GripCalService
+on property:debug.grip.cal_test_result=*
+	start GripCalibration
+
+on property:vendor.grip.fw.version=*
+	setprop vendor.airtrigger.fw.version ${vendor.grip.fw.version}
+on property:vendor.grip.fw.result=*
+	setprop	vendor.airtrigger.fw.result	${vendor.grip.fw.result}
+on property:vendor.grip.checkfpc=*
+	start GripCheckK
+on property:vendor.grip.reset_flag=*
+   start GripCheckK
+on property:vendor.grip.vib.en=*
+	start GripCheckK
+
+on property:sys.boot_completed=1
+	start GripCheckK
+# ASUS_BSP--- Clay_Wang "For Grip Calibration"
+
+# apply cta property to radio can access
+on property:ro.vendor.build.cta=1
+    setprop ro.vendor.odm.tel.cta 1
+
+
+
+#ASUS_BSP Battery +++
+on property:sys.boot_completed=1
+   start battery_ver
+#ASUS_BSP Battery ---
+
+#ASUS_BSP Battery +++
+service battery_ver /vendor/bin/sh  /vendor/bin/firmware_version.sh
+    class core
+    user root
+    group root
+    oneshot
+    disabled
+#ASUS_BSP Battery ---
+
+on property:sys.boot_completed=1
+    write /sys/devices/platform/soc/soc:hall_sensor/hall_sensor/change 8
+    write /sys/devices/platform/soc/soc:hall1_sensor/hall1_sensor/change 8
+    write /sys/devices/platform/soc/soc:hall2_sensor/hall2_sensor/change 8
+    write /sys/devices/platform/soc/soc:hall3_sensor/hall3_sensor/change 8
+
+#ASUS BSP touch +++
+on property:sys.boot_completed=1
+    chmod 0664 /sys/bus/i2c/devices/3-0038/fts_fw_version
+    chown system system /sys/bus/i2c/devices/3-0038/fts_fp_xy
+    chmod 0777 /sys/bus/i2c/devices/3-0038/fts_fp_xy
+    chown system system /sys/bus/i2c/devices/3-0038/keymapping_touch
+    chmod 0777 /sys/bus/i2c/devices/3-0038/keymapping_touch
+    restorecon /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/keymapping_touch
+    chown system system /sys/bus/i2c/devices/3-0038/edge_settings
+    chmod 0777 /sys/bus/i2c/devices/3-0038/edge_settings
+    restorecon /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/edge_settings
+    chown system system /sys/bus/i2c/devices/3-0038/game_settings
+    chmod 0777 /sys/bus/i2c/devices/3-0038/game_settings
+    restorecon /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/game_settings
+    chown system system /sys/bus/i2c/devices/3-0038/rise_report_rate
+    chmod 0777 /sys/bus/i2c/devices/3-0038/rise_report_rate
+    restorecon /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/rise_report_rate
+    start touch_ver
+
+on property:vendor.asus.gamingtype=0
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_game_mode 0
+on property:vendor.asus.gamingtype=1
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_game_mode 1
+
+on property:vendor.screen.rotation=0
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_rotation_mode 0
+on property:vendor.screen.rotation=90
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_rotation_mode 1
+on property:vendor.screen.rotation=270
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_rotation_mode 2
+
+on property:persist.vendor.asus.fp.wakeup=true
+   write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_fp_mode 1
+on property:persist.vendor.asus.fp.wakeup=false
+   write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_fp_mode 0
+
+on property:vendor.asus.touch_control_fod=0
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_fp_ctrl_mode 0
+on property:vendor.asus.touch_control_fod=1
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_fp_ctrl_mode 1
+on property:vendor.asus.touch_control_fod=2
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_fp_ctrl_mode 2
+
+on property:vendor.asus.touch_control_aod=0
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_aod_ctrl_mode 0
+on property:vendor.asus.touch_control_aod=1
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_aod_ctrl_mode 1
+
+on property:vendor.goodix.sensor.status=*
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fp_auth_status ${vendor.goodix.sensor.status}
+
+on property:vendor.audio.in_call=1
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_phone_state 1
+    write /sys/class/asuslib/charger_limit_mode 64,1
+on property:vendor.audio.in_call=0
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_phone_state 0
+    write /sys/class/asuslib/charger_limit_mode 64,0
+
+on property:debug.asus.touch.log_level=*
+    setprop vendor.asus.touch.log_level ${debug.asus.touch.log_level}
+
+on property:vendor.asus.touch.log_level=*
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/fts_log_level ${vendor.asus.touch.log_level}
+
+on property:debug.asus.touch.report_rate=*
+    setprop vendor.asus.touch.report_rate ${debug.asus.touch.report_rate}
+
+on property:vendor.asus.touch.report_rate=*
+    write /sys/devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.i2c/i2c-3/3-0038/rise_report_rate ${vendor.asus.touch.report_rate}
+#ASUS BSP touch ---
+
+#ASUS BSP Fingerprint +++
+on property:vendor.screen.turning-off=*
+   setprop vendor.screen.turningoff	${vendor.screen.turning-off}
+#ASUS BSP Fingerprint ---
+
+#for log tool switch usb+++
+on property:vendor.asus.usb.diag=1
+    setprop vendor.usb.diag 1
+
+on property:vendor.asus.usb.diag=0
+    setprop vendor.usb.diag 0
+#for log tool switch usb---
+
+# ASUS_BSP camera+++
+on property:sys.boot_completed=1
+    chmod 644 /vendor/factory/dualcam_cali.bin
+    copy /vendor/factory/dualcam_cali.bin /data/vendor/camera/dualcam_cali.bin
+    chmod 0755 /data/vendor/camera/dualcam_cali.bin
+    copy /proc/driver/dualcam_cali /data/vendor/camera/dualcam_cali
+    chmod 0755 /data/vendor/camera/dualcam_cali
+
+on property:vendor.camera.set.apk.usingname=*
+	setprop vendor.camera.apk.usingname   ${vendor.camera.set.apk.usingname}
+
+on property:vendor.camera.set.apk.front.usingname=*
+	setprop vendor.camera.apk.front.usingname   ${vendor.camera.set.apk.front.usingname}
+
+on property:vendor.camera.set.apk.rear.usingname=*
+	setprop vendor.camera.apk.rear.usingname   ${vendor.camera.set.apk.rear.usingname}
+
+on property:vendor.camera.set.apk.activity=*
+	setprop vendor.camera.apk.activity   ${vendor.camera.set.apk.activity}
+
+on property:vendor.camera.setlimclk=1
+	exec /vendor/bin/sysMonApp clocks limit --coreClock 787 --q6 cdsp
+
+on property:vendor.camera.setlimclk=0
+	exec /vendor/bin/sysMonApp clocks remove --q6 cdsp
+
+on property:vendor.asus.dis_flash_light=1
+	write /proc/driver/asus_flash "2 1"
+
+on property:vendor.asus.dis_flash_light=0
+	write /proc/driver/asus_flash "2 0"
+# ASUS_BSP camera---
+
+# ASUS_BSP NFC +++
+on property:vendor.asus.nfc.felica=*
+    start nfcfelica
+# ASUS_BSP NFC ---
+
+# ASUS_BSP Charger : Add the inteface with ASUS userspace +++
+on property:persist.sys.stopcharging=1
+	write /sys/class/asuslib/charging_suspend_en 1
+on property:persist.sys.stopcharging=0
+	write /sys/class/asuslib/charging_suspend_en 0
+on property:persist.sys.charginglimit=*
+    write /sys/class/asuslib/smartchg_slow_charging ${persist.sys.charginglimit}
+
+on property:persist.vendor.fota.launchedtime=*
+    write /sys/class/asuslib/launchedtime ${persist.vendor.fota.launchedtime}
+
+# [+++]ASUS_BSP : Add for ultra battery life
+on property:persist.sys.ultrabatterylife=1
+    write /sys/class/asuslib/ultra_bat_life 1
+on property:persist.sys.ultrabatterylife=0
+    write /sys/class/asuslib/ultra_bat_life 0
+# [---]ASUS_BSP : Add for ultra battery life
+
+# [+++]ASUS_BSP : Add for demo apps
+on property:sys.asus.cndemo=1
+	write /sys/class/asuslib/cn_demo_app 1
+on property:sys.asus.cndemo=0
+	write /sys/class/asuslib/cn_demo_app 0
+on property:persist.sys.enableAPD=1
+	write /sys/class/asuslib/demo_app_property 1
+on property:persist.sys.enableAPD=0
+	write /sys/class/asuslib/demo_app_property 0
+on property:persist.sys.enableAPD=1
+    write /sys/class/asuslib/demo_app_status 1
+on property:persist.sys.enableAPD=0
+    write /sys/class/asuslib/demo_app_status 0
+# [---]ASUS_BSP : Add for demo apps
+
+on property:sys.boot_completed=1
+     chmod 0666 /sys/class/asuslib/set_debugmask
+     chmod 777 /d/regmap/0-07/address
+     chmod 777 /d/regmap/0-07/data
+     chmod 777 /d/regmap/2-07/address
+     chmod 777 /d/regmap/2-07/data
+     chmod 0777 /sys/class/asuslib/usbin_suspend_en
+     chown system system /sys/class/asuslib/usbin_suspend_en
+     chmod 777 /sys/class/asuslib/charger_limit_en
+     chmod 777 /sys/class/asuslib/charger_limit_cap
+     chmod 777 /sys/class/qcom-battery/ship_mode_en
+     chmod 777 /sys/class/asuslib/enter_ship_mode
+     write /sys/class/asuslib/boot_completed 1
+# ASUS_BSP Charger : Add the inteface with ASUS userspace ---
+
+# ASUS_BSP EnterShippingMode by ABL +++
+on property:ro.boot.shippingmode=1
+    wait /sys/class/asuslib/enter_ship_mode
+    write /sys/class/asuslib/enter_ship_mode 1
+# ASUS_BSP EnterShippingMode by ABL ---
+
+# ASUS_BSP +++ WIFI
+on property:sys.boot_completed=1
+    start wifimacsh
+
+on property:vendor.asus.wfd.config=1
+    setprop vendor.asus.wfd2.config 1
+
+on property:vendor.asus.wfd.config=3
+    setprop vendor.asus.wfd2.config 3
+
+on property:vendor.asus.wfd.config=0
+    setprop vendor.asus.wfd2.config 0
+
+on property:vendor.wlan.softap.driver.status=ok
+    write /proc/driver/UTSstatus 1
+
+on property:vendor.wlan.softap.driver.status=unloaded
+    write /proc/driver/UTSstatus 0
+
+# ASUS_BSP+++ for wlan miracast log
+on property:persist.vendor.asus.miracastlog=1
+    setprop debug.wfd.uibcevents 1
+    write /data/vendor/mmosal_logmask.cfg "LOGMASK = 6013:63\\nLOGMASK = 6015:63"
+    chmod 666 /data/vendor/mmosal_logmask.cfg
+
+on property:persist.vendor.asus.miracastlog=0
+    setprop debug.wfd.uibcevents 0
+    rm /data/vendor/mmosal_logmask.cfg
+# ASUS_BSP--- for wlan miracast log
+
+on property:log.asus.sar.audio=*
+    restart WifiSAR
+
+on property:wlan.driver.status=*
+    restart WifiSAR
+
+on property:vendor.wlan.softap.driver.status=*
+    restart WifiSAR
+
+on property:vendor.sla.enabled=*
+    restart WifiSAR
+
+on property:log.ril.tel.mobiledata=*
+    setprop vendor.ril.tel.mobiledata ${log.ril.tel.mobiledata}
+    restart WifiSAR
+
+# ASUS_BSP --- WIFI
+
+on property:persist.vendor.asus.foregroundapp=*
+   setprop vendor.foreground.app   ${persist.vendor.asus.foregroundapp}
+	
+on property:persist.sys.systemmode=*
+   setprop vendor.setting.mode   ${persist.sys.systemmode}
+
+#add for game cdn
+on property:sys.asusconfigupdater.game_policy_cdn_version.csv=*
+   setprop vendor.asusconfigupdater.game_policy_cdn_version.csv   	   ${sys.asusconfigupdater.game_policy_cdn_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_0_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_0_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_0_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_1_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_1_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_1_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_2_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_2_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_2_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_3_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_3_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_3_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_4_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_4_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_4_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_5_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_5_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_5_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_6_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_6_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_6_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_7_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_7_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_7_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_8_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_8_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_8_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_9_version.csv=*
+   setprop vendor.asusconfigupdater.game_perf_para_cdn_9_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_9_version.csv}
+
+# jack for fps monitor
+on property:vendor.asus.surfaceflingercall=*
+    start servicecall
+
+# ASUS_BSP +++ USB Host
+on property:vendor.asus.usb.speed=2
+	write /sys/bus/platform/devices/a600000.ssusb/speed high
+on property:vendor.asus.usb.speed=3
+	write /sys/bus/platform/devices/a600000.ssusb/speed ssp
+# ASUS_BSP --- USB Host
+
+# ASUS_BSP +++ AsusRecord
+# for asusrecord service (falling)
+on property:persist.sys.asus.motorservice.fallingTrigger=1
+    start asus_record
+
+# for asusrecord service (rotation)
+on property:persist.sys.asus.motorservice.rotationTrigger=1
+    start asus_record
+
+# for asusrecord service (hit)
+on property:persist.sys.asus.motorservice.hitTrigger=1
+    start asus_record
+
+# for asusrecord service (dump record)
+on property:persist.sys.asus.motorservice.dumprecord=1
+    start asus_record
+
+on property:debug.update.asusrecord=1
+    start asus_record
+
+service asus_record /system/bin/asusrecord
+    user root
+    group root
+    disabled
+    oneshot
+# ASUS_BSP --- AsusRecord
+
+#for audio +++
+service dongle /vendor/bin/dongle
+    user root
+    group root system audio
+    disabled
+    oneshot
+    seclabel u:r:zf_dongle:s0
+    
+on property:vendor.audio.dongle=true
+    start dongle   
+#for audio ---
+
+###-----------------------------------------------###
+#              ALL ASUS on property (end)
+# 
+#            ****DO NOT insert service***     
+###-----------------------------------------------###

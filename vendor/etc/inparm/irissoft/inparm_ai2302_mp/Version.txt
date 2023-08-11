@@ -1,0 +1,35 @@
+Inparm_ZF10_V1
+1. Reference inparm from ROG7
+
+Inparm_ZF10_V1.1
+1. Add inparm for 144fps calibration support 
+	inParm2_144.txt
+	inParm5_144.txt
+	inParm8_144.txt
+	inParm11_144.txt
+	inParm14_144.txt
+	inParm17_144.txt
+2. Update mcf_Check and mcf_Check_low for optical wider range support of 144fps
+
+Inparm_ZF10_V1.2
+1. improve the 144fps dE change line213 from 2->1
+	inParm2_144.txt
+	inParm5_144.txt
+	inParm8_144.txt
+	inParm11_144.txt
+	inParm14_144.txt
+	inParm17_144.txt
+
+Inparm_ZF10_V1.3
+1. Update inParms for APL SDR2HDR/HDR/HG support
+2. Update irisconfig.xml for APL SDR2HDR/HDR/HG support
+
+Inparm_ZF10_V1.4
+1. Update mcfcheck.txt for minimum brightness to 360nits
+
+Inparm_ZF10_V1.5
+1. Update inparms for 144fps of CAM/APL SDR2HDR/APL HDR
+
+Inparm_ZF10_V1.6
+1. Update mcfCheck.txt and mcfCheck_low.txt line38 -0.4-->-0.6 line39 0.4-->0.6
+

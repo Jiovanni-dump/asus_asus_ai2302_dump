@@ -1,0 +1,12 @@
+service tdoor_load_cal /vendor/bin/sh /vendor/bin/tdoor_load_cal.sh
+    seclabel u:r:motor:s0
+    user root
+    group root
+    oneshot
+    disabled
+
+on property:sys.boot_completed=1
+    start tdoor_load_cal
+
+on property:vendor.thermaldoor.load_cal_data=1
+    start tdoor_load_cal
