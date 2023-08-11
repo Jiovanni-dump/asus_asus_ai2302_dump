@@ -1,0 +1,8 @@
+﻿[{"wallpaper":"default_slideshow_wallpaper01","title":"Jungle Green","description":"Appreciate the magnificence of nature.","author":""},
+{"wallpaper":"default_slideshow_wallpaper02","title":"Ocean Blue​​","description":"Find serenity and embrace tranquility.","author":""},
+{"wallpaper":"default_slideshow_wallpaper03","title":"Shimmering Purple​","description":"Explore the mystery of the unknown.​","author":""},
+{"wallpaper":"default_slideshow_wallpaper04","title":"Passion Red","description":"Infuse your soul with passion.","author":""},
+{"wallpaper":"default_slideshow_wallpaper05","title":"Fresh Green","description":"Enhance the joy in your life.","author":""},
+{"wallpaper":"default_slideshow_wallpaper06","title":"Colorful Orange","description":"A colorful addition to your lifestyle.","author":""},
+{"wallpaper":"default_slideshow_wallpaper07","title":"Elegant Purple","description":"Find calmness in elegance.","author":""},
+{"wallpaper":"default_slideshow_wallpaper08","title":"Quiet Blue​","description":"A meditative experience.","author":""}]

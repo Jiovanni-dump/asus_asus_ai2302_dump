@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<permissions>
+    <feature name="asus.hardware.display.notch" />
+    <feature name="com.asus.hardware.display.camera_notch" />
+</permissions>

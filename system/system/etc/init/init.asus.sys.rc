@@ -1,0 +1,38 @@
+
+on property:sys.foregroundapp=*
+	setprop vendor.foreground.app ${sys.foregroundapp}
+
+on property:vendor.factory.adbon=1
+    copy /vendor/factory/adbkey.pub /data/misc/adb/adb_keys
+    chown system shell /data/misc/adb/adb_keys
+    chmod 0640 /data/misc/adb/adb_keys
+
+on property:vendor.asus.autofota=1
+    setprop vendor.asus.disable_vibrator 2
+    start asus_osinfo
+    setprop vendor.asus.autofota 2
+
+#add for game cdn
+on property:sys.asusconfigupdater.game_policy_cdn_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_policy_cdn_version.csv   	   ${sys.asusconfigupdater.game_policy_cdn_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_0_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_0_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_0_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_1_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_1_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_1_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_2_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_2_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_2_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_3_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_3_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_3_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_4_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_4_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_4_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_5_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_5_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_5_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_6_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_6_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_6_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_7_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_7_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_7_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_8_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_8_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_8_version.csv}
+on property:sys.asusconfigupdater.game_perf_para_cdn_9_version.csv=*
+   setprop persist.sys.asusconfigupdater.game_perf_para_cdn_9_version.csv   ${sys.asusconfigupdater.game_perf_para_cdn_9_version.csv}
+

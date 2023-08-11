@@ -1,0 +1,8 @@
+﻿[{"wallpaper":"default_slideshow_wallpaper01","title":"丛林绿","description":"吐露大自然的清新氣息。​","author":""},
+{"wallpaper":"default_slideshow_wallpaper02","title":"海洋蓝","description":"体验纯净的自然触感。​","author":""},
+{"wallpaper":"default_slideshow_wallpaper03","title":"微光紫","description":"探索神秘绚烂的未知世界。","author":""},
+{"wallpaper":"default_slideshow_wallpaper04","title":"热情红​","description":"注入无穷的热情與能量。","author":""},
+{"wallpaper":"default_slideshow_wallpaper05","title":"清新绿​","description":"为生活点缀一抹清新自然。","author":""},
+{"wallpaper":"default_slideshow_wallpaper06","title":"缤纷橘","description":"享受热情甜蜜的时刻。","author":""},
+{"wallpaper":"default_slideshow_wallpaper07","title":"优雅紫","description":"展现优雅的品味和姿态。","author":""},
+{"wallpaper":"default_slideshow_wallpaper08","title":"沉静蓝","description":"感受纯净宁静的瞬间。","author":""}]

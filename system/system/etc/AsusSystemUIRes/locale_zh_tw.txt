@@ -1,0 +1,8 @@
+﻿[{"wallpaper":"default_slideshow_wallpaper01","title":"叢林綠​","description":"吐露大自然的清新氣息。​","author":""},
+{"wallpaper":"default_slideshow_wallpaper02","title":"海洋藍","description":"體驗純淨的自然觸感。​","author":""},
+{"wallpaper":"default_slideshow_wallpaper03","title":"微光紫","description":"探索神秘絢爛的未知世界。","author":""},
+{"wallpaper":"default_slideshow_wallpaper04","title":"熱情紅​","description":"注入無窮的熱情與能量。","author":""},
+{"wallpaper":"default_slideshow_wallpaper05","title":"清新綠​","description":"為生活點綴一抹清新自然。","author":""},
+{"wallpaper":"default_slideshow_wallpaper06","title":"繽紛橘​","description":"享受熱情甜蜜的時刻。","author":""},
+{"wallpaper":"default_slideshow_wallpaper07","title":"優雅紫","description":"展現優雅的品味和姿態。","author":""},
+{"wallpaper":"default_slideshow_wallpaper08","title":"沉靜藍","description":"感受純淨寧靜的瞬間。","author":""}]

@@ -1,0 +1,47 @@
+{
+	"displayname":"sys dynamic",
+	"configurations": [
+		{
+			"category":"Temperature",
+			"items": [
+				{
+					"name":"Temperature",
+					"code":"0x48000000",
+					"value":"0",
+					"valueset": [
+					  "0","99"
+					]
+				}
+			]
+		},
+		{
+			"category":"CPU",
+			"items": [
+				{
+					"name":"UCLAMP_CLAMP",
+					"code":"0x43C10000",
+					"value":"75",
+					"valueset": [
+					  "20","30","40","50","60","70","80"
+					]
+				},
+				{
+					"name":"/sys/module/msm_performance/parameters/cpu_max_freq 4-6",
+					"code":"0x40804000",
+					"value":"2592",
+					"valueset": [
+						"633", "998", "1324", "1651", "1881", "2112", "2342", "2572", "2745"
+					]
+				},
+				{
+					"name":"/sys/module/msm_performance/parameters/cpu_max_freq 7",
+					"code":"0x40804200",
+					"value":"2841",
+					"valueset": [
+						"787", "1171", "1536", "1766", "1996", "2246", "2476", "2707", "2918", "3187"
+					]
+				}
+			]
+		}
+	]
+}

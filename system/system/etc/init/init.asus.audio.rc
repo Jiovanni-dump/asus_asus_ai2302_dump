@@ -1,0 +1,41 @@
+on property:ro.product.system.brand=*
+    setprop sys.audio.system.brand ${ro.product.system.brand}
+    setprop vendor.audio.system.brand ${ro.product.system.brand}
+
+# For Audio +++
+on property:sys.audio.calibration.rcv=*
+    setprop vendor.audio.calibration.rcv ${sys.audio.calibration.rcv}
+    
+on property:sys.audio.calibration.spk=*
+    setprop vendor.audio.calibration.spk ${sys.audio.calibration.spk}
+    
+on property:vendor.audio.calibration.rcv.value=*
+    setprop sys.audio.calibration.rcv.value ${vendor.audio.calibration.rcv.value}
+    
+on property:vendor.audio.calibration.spk.value=*
+    setprop sys.audio.calibration.spk.value ${vendor.audio.calibration.spk.value}
+
+on property:vendor.audio.calibration=*
+    setprop sys.audio.calibration ${vendor.audio.calibration}
+    
+on property:sys.audio.calibration.value.range=*
+    setprop vendor.audio.calibration.value.range ${sys.audio.calibration.value.range}
+
+on property:vendor.use.audio.eu.parameters=*
+    setprop sys.use.audio.eu.parameters ${vendor.use.audio.eu.parameters}
+
+on property:sys.audio.dongle=*
+    setprop vendor.audio.dongle ${sys.audio.dongle}
+# For Audio ---
+
+#ASUS_BSP for CSC calibration +++
+service audio_amp_cal /system/bin/AudioAmpDynamicCalibrationCSC 0 0
+    user root
+    group root system audio
+    disabled
+    oneshot
+    seclabel u:r:dumpstate:s0
+
+on property:sys.audio.calibration=1
+    start audio_amp_cal
+#ASUS_BSP for CSC calibration ---

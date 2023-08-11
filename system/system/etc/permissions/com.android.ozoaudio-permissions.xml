@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <library name="com.android.ozoaudio.lib"
+            file="/system/framework/com.android.ozoaudio.lib.jar"/>
+    <library name="com.android.ozoaudio.notify"
+            file="/system/framework/com.android.ozoaudio.notify-V1.0-java.jar"/>
+</permissions>
